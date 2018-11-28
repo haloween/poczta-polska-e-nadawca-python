@@ -36,8 +36,8 @@ class PocztaPolskaAPI(object):
     service = None
     factory = None
 
-    def __init__(self, debugMode=False, useLabs=False, initZeep=True):
-        self.debugMode = debugMode
+    def __init__(self, useTest=False, useLabs=False, initZeep=True):
+        self.useTest = useTest
         self.useLabs = useLabs
 
         #sorry for that but i liked it from JS :)
@@ -63,12 +63,14 @@ class PocztaPolskaAPI(object):
                 continue
 
             service_method = self.service_get(service_name)
+
+            #double check
             if type(service_method) is zeep.client.OperationProxy:
                 setattr(self, service_name, service_method)
 
     def set_config(self, settings):
         '''
-            We can set the config here by passing a object.
+            We can set the config here by passing a proper object.
         '''
 
         self.PROD_USERNAME = getattr(settings, 'POCZTA_POLSKA_API_USERNAME', None)
@@ -83,12 +85,12 @@ class PocztaPolskaAPI(object):
             Are we setup ?
         '''
 
-        if self.debugMode:
+        if self.useTest:
             if self.SANDBOX_USERNAME is None:
-                raise UnboundLocalError('Debug Mode is active - Sandbox username is not defined')
+                raise UnboundLocalError('TEST Mode is active - Sandbox username is not defined')
 
             if self.SANDBOX_PASSWORD is None:
-                raise UnboundLocalError('Debug Mode is active - Sandbox password is not defined')
+                raise UnboundLocalError('TEST Mode is active - Sandbox password is not defined')
         else:
             if self.PROD_USERNAME is None:
                 raise UnboundLocalError('Production username is not defined')
@@ -98,7 +100,7 @@ class PocztaPolskaAPI(object):
 
     @property
     def wsdl_url(self):
-        if self.debugMode:
+        if self.useTest:
             return self.SANDBOX_API_LABS_WSDL if self.useLabs else self.SANDBOX_API_WSDL
 
         return self.PROD_API_LABS_WSDL if self.useLabs else self.SANDBOX_API_WSDL
