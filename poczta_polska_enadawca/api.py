@@ -10,13 +10,6 @@ except:
     settings = None
 
 
-class PocztaPolskaSettingsObject(object):
-    POCZTA_POLSKA_API_USERNAME = None
-    POCZTA_POLSKA_API_PASSWORD = None
-    POCZTA_POLSKA_API_SANDBOX_USERNAME = None
-    POCZTA_POLSKA_API_SANDBOX_PASSWORD = None
-
-
 class PocztaPolskaAPI(object):
     '''
         That's a quickly written Class for Poczta Polska e-nadawca services.
@@ -116,8 +109,8 @@ class PocztaPolskaAPI(object):
         #add http basic auth wrapper to http requests
         session = Session()
         session.auth = HTTPBasicAuth(
-            self.PROD_USERNAME if not self.debugMode else self.SANDBOX_USERNAME,
-            self.PROD_PASSWORD if not self.debugMode else self.SANDBOX_PASSWORD,
+            self.PROD_USERNAME if not self.useTest else self.SANDBOX_USERNAME,
+            self.PROD_PASSWORD if not self.useTest else self.SANDBOX_PASSWORD,
         )
 
         #wrapped client
@@ -127,7 +120,7 @@ class PocztaPolskaAPI(object):
         self.factory = self.client.type_factory('ns0')
 
         #wrong service endpoint in WSDL override
-        if self.debugMode:
+        if self.useTest:
             if self.useLabs:
                 self.s = self.client.create_service('{http://e-nadawca.poczta-polska.pl}LABSBinding', 
                     'https://en-testwebapi.poczta-polska.pl/websrv/labs.php')
@@ -188,7 +181,7 @@ class PocztaPolskaAPI(object):
         service_method = getattr(self.s, method, None)
 
         if not service_method:
-            raise ('Servide does not provide the %s method' % method)
+            raise ('Service does not provide the %s method' % method)
 
         return service_method
 

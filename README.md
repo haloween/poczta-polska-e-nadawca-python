@@ -18,7 +18,7 @@ Define following variables in your project settings:
 After that - use as follows:
 
 ```
-from poczta_polska_enadawca import PocztaPolskaAPI
+from poczta_polska_enadawca.api import PocztaPolskaAPI
 
 
 PocztaInstance = PocztaPolskaAPI()
@@ -32,7 +32,8 @@ PocztaInstance.hello('Poczta API')
 ### Setup and usage rest of the world :)
 
 ```
-from poczta_polska_enadawca import PocztaPolskaAPI, PocztaPolskaSettingsObject
+from poczta_polska_enadawca.api import PocztaPolskaAPI
+from poczta_polska_enadawca.settings import PocztaPolskaSettingsObject
 
 
 PocztaPolskaSettings = PocztaPolskaSettingsObject()
