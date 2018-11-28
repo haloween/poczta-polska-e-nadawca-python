@@ -1,6 +1,7 @@
 # poczta-polska-e-nadawca-python
-## Short and quick class easing use of Poczta Polska e-nadawca WSDL API.
-## It exposes service methods and factory types directly on instance.
+## Short and quick class easing use of Poczta Polska e-nadawca WSDL API. It exposes service methods and factory types directly on instance.
+
+
 
 ### Installation
 ```
@@ -12,10 +13,10 @@ pip install  poczta_polska_enadawca
 
 Define following variables in your project settings:
 
-POCZTA_POLSKA_API_USERNAME
-POCZTA_POLSKA_API_PASSWORD
-POCZTA_POLSKA_API_SANDBOX_USERNAME
-POCZTA_POLSKA_API_SANDBOX_PASSWORD
+* POCZTA_POLSKA_API_USERNAME
+* POCZTA_POLSKA_API_PASSWORD
+* POCZTA_POLSKA_API_SANDBOX_USERNAME
+* POCZTA_POLSKA_API_SANDBOX_PASSWORD
 
 After that - use as follows:
 
