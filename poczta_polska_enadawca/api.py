@@ -58,7 +58,7 @@ class PocztaPolskaAPI(object):
             service_method = self.service_get(service_name)
 
             #double check
-            if type(service_method) is zeep.client.OperationProxy:
+            if type(service_method) is zeep.proxy.OperationProxy:
                 setattr(self, service_name, service_method)
 
     def set_config(self, settings):
