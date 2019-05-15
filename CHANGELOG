@@ -1,4 +1,5 @@
 CHANGELOG:
 ==========
-
+2019-05-15 - Added type converter and examples in README
+2018-11-30 - Form factory access fix
 2018-11-28 - First release

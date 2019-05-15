@@ -49,6 +49,78 @@ PocztaInstance.init_zeep() #initialize zeep
 ```
 That should be working at this moment.
 
+
+## Placowka type conversion:
+
+That should come in useful :)
+So after on week of trial and error i found that if you need to use pickup points, a certain type must be passed.
+So i've built in a type converter ....
+
+```
+
+pp = PocztaInstance.getPlacowkiPocztowe(wojewodztwo.teryt_short_id)
+placowkaPocztowa = [p for p in pp if p['id'] == int(adres.details['pni'])][0] #unfortunately - my request to get that by id was denied :)
+urzadWydaniaEPrzesylkiType = PocztaInstance.convertPlacowkaToUrzad(placowkaPocztowa)
+
+```
+
+
+### Dude - i need something to paste ...
+```
+def kurier48_gen_etiquette(request, order, adres):
+
+    PocztaInstance = PocztaPolskaAPI(useTest=settings.DEBUG)
+    guid = PocztaInstance.getGuid(1)[0]
+
+    package = PocztaInstance['przesylkaBiznesowaType']
+    
+    adresType = PocztaInstance['adresType']
+    adresType.nazwa = adres.get_full_name()
+
+    if adres.nazwa:
+        adresType.nazwa2 = adres.get_person_name()
+
+    adresType.ulica = adres.adres
+    adresType.miejscowosc = adres.miasto
+    adresType.kodPocztowy = adres.kod
+    adresType.mobile = adres.mobile_no
+    adresType.email = adres.email
+
+    package.guid = guid
+    package.niestandardowa = False
+    package.gabaryt = shippingExtra.get('gabaryt', 'XXL')
+    package.adres = adresType
+    package.masa = order.waga_zamowienia(wGramach=True)
+    package.ostroznie = False
+    package.opis = '{o.site_name} {o.oid}'.format(o=order)
+    package.wartosc = order.wartosc_zamowienia(wGroszach=True)
+
+    if adres.details.get('pni'):
+        
+        wojewodztwo = Wojewodztwo.objects.get(nazwa__iexact=adres.details['province'])
+        pp = PocztaInstance.getPlacowkiPocztowe(wojewodztwo.teryt_short_id)
+        placowka_wydawcza = [p for p in pp if p['id'] == int(adres.details['pni'])][0]
+        package['urzadWydaniaEPrzesylki'] = PocztaInstance.convertPlacowkaToUrzad(placowka_wydawcza, 'urzadWydaniaEPrzesylkiType')
+    
+    packageReturn = PocztaInstance.addShipment(package)
+    packageReturn = packageReturn[0]
+
+    shipping_return = {}
+    shipping_return['raw'] = packageReturn
+
+    if packageReturn['error']:
+        shipping_return['success'] = False
+        shipping_return['error_code'] = packageReturn['error']['errorNumber']
+        shipping_return['error_message'] = packageReturn['error']['errorDesc']
+    else:        
+        shipping_return['numerNadania'] = packageReturn['numerNadania']
+        shipping_return['guid'] = packageReturn['guid']
+        shipping_return['parcelCode'] = '%s::%s' % (shipping_return['numerNadania'], shipping_return['guid'])
+        shipping_return['success'] = True
+
+    return shipping_return
+```
+
 ## Where is the factory and service ?!
 
 If you insist they're avaliable as .service and .factory on instance.
@@ -110,3 +182,4 @@ PocztaInstance = PocztaPolskaAPI(useTest=True)
 ```
 PocztaInstance = PocztaPolskaAPI(useTest=True, useLabs=False)
 ```
+

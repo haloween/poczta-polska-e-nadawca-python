@@ -5,9 +5,9 @@ from requests.auth import HTTPBasicAuth
 
 
 try:
-    from django.conf import settings
+    from django.conf import settings as django_settings
 except:
-    settings = None
+    django_settings = None
 
 
 class PocztaPolskaAPI(object):
@@ -29,11 +29,11 @@ class PocztaPolskaAPI(object):
     service = None
     factory = None
 
-    def __init__(self, useTest=False, useLabs=False, initZeep=True):
+    def __init__(self, useTest=False, useLabs=False, initZeep=True, settings=django_settings):
         self.useTest = useTest
         self.useLabs = useLabs
 
-        #sorry for that but i liked it from JS :)
+        #sorry for that but i liked it from JS 
         settings and self.set_config(settings)
         initZeep and self.init_zeep()
 
@@ -43,7 +43,7 @@ class PocztaPolskaAPI(object):
             Use: your_instance['addressType']
         '''
 
-        return self.get_from_factory(key)
+        return self.get_from_factory(key)()
 
     def __attach_service_refs(self):
         '''
@@ -169,7 +169,8 @@ class PocztaPolskaAPI(object):
             raise TypeError('Object type is required to be string')
 
         assert self.factory, "Type Factory is unavaliable, please provide valid settings via .set_config(settings) and run .init_zeep() on instance"
-        return self.factory[object_type]
+        
+        return getattr(self.factory, object_type)
 
     def service_get(self, method):
         '''
@@ -190,3 +191,38 @@ class PocztaPolskaAPI(object):
             That's preety much proxied call.
         '''
         return self.service_get(method)(*args)
+    
+    def convertPlacowkaToUrzad(self, placowkaPocztowa, requiredType='urzadWydaniaEPrzesylkiType'):     
+        '''
+            This little function allows conversion of placowkaPocztowa type to any other type.
+            For example - it you pass wrong type on urzadWydaniaEPrzesylki field - it won't work ...
+        '''
+        uw = self[requiredType]
+
+        uwParams = [
+            'lokalizacjaGeograficzna',
+            'id',
+            'prefixNazwy',
+            'nazwa',
+            'wojewodztwo',
+            'powiat',
+            'miejsce',
+            'kodPocztowy',
+            'miejscowosc',
+            'ulica',
+            'numerDomu',
+            'numerLokalu',
+            'nazwaWydruk',
+            'punktWydaniaEPrzesylki',
+            'powiadomienieSMS',
+            'punktWydaniaPrzesylkiBiznesowejPlus',
+            'punktWydaniaPrzesylkiBiznesowej',
+            'siecPlacowek',
+            'idZPO'
+        ]
+
+        for param in uwParams:
+            setattr(uw, param, getattr(placowkaPocztowa, param))
+
+        return uw
+    
