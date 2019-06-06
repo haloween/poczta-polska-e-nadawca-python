@@ -1,5 +1,5 @@
 # poczta-polska-e-nadawca-python
-## Short and quick class easing use of Poczta Polska e-nadawca WSDL API. It exposes service methods and factory types directly on instance.
+## Short and quick class easing use of Poczta Polska e-nadawca WSDL API and WS Tracking API. It exposes service methods and factory types directly on instance.
 
 ### Installation
 ```
@@ -10,23 +10,32 @@ pip install  poczta_polska_enadawca
 
 Define following variables in your project settings:
 
+For e-nadawca:
 * POCZTA_POLSKA_API_USERNAME
 * POCZTA_POLSKA_API_PASSWORD
 * POCZTA_POLSKA_API_SANDBOX_USERNAME
 * POCZTA_POLSKA_API_SANDBOX_PASSWORD
+
+For WS Tracking (that's the one you need to register IP and get credentials)
+* POCZTA_POLSKA_WSTRACKING_API_USERNAME
+* POCZTA_POLSKA_WSTRACKING_API_PASSWORD
 
 After that - use as follows:
 
 ```
 from poczta_polska_enadawca.api import PocztaPolskaAPI
 
-
 PocztaInstance = PocztaPolskaAPI()
+PocztaInstance.hello('Poczta API')
 ```
 
-and you can call:
+And the tracking one....
+
 ```
-PocztaInstance.hello('Poczta API')
+from poczta_polska_enadawca.ws_tracking_api import PocztaPolskaWSTrackingAPI
+
+PocztaTrackingInstance = PocztaPolskaWSTrackingAPI()
+PocztaTrackingInstance.witaj('poczta_polska_enadawca')
 ```
 
 ### Setup and usage rest of the world :)
@@ -49,6 +58,23 @@ PocztaInstance.init_zeep() #initialize zeep
 ```
 That should be working at this moment.
 
+
+
+```
+from poczta_polska_enadawca.settings import PocztaPolskaSettingsObject
+from poczta_polska_enadawca.ws_tracking_api import PocztaPolskaWSTrackingAPI
+
+
+PocztaPolskaSettings = PocztaPolskaSettingsObject()
+PocztaPolskaSettingsObject.POCZTA_POLSKA_WSTRACKING_API_USERNAME = 'bar'
+PocztaPolskaSettingsObject.POCZTA_POLSKA_WSTRACKING_API_PASSWORD = 'bar'
+
+PocztaTrackingInstance = PocztaPolskaWSTrackingAPI(initZeep=False) #we're not executing default init
+PocztaTrackingInstance.set_config(PocztaPolskaSettings) #provide the object with settings defined above
+PocztaTrackingInstance.init_zeep() #initialize zeep
+
+```
+That should be working at this moment.
 
 ## Placowka type conversion:
 
@@ -123,7 +149,7 @@ def kurier48_gen_etiquette(request, order, adres):
 
 ## Where is the factory and service ?!
 
-If you insist they're avaliable as .service and .factory on instance.
+If you insist they're avaliable as .service and .factory on instances.
 
 BUT
 
@@ -169,6 +195,7 @@ PocztaPolskaAPI(useTest=False, useLabs=False, initZeep=True)
 ### I need to debug zeep ...
 ```
 PocztaInstance.enable_zeep_debug()
+PocztaTrackingInstance.enable_zeep_debug()
 ```
 
 ## Few examples of init: 

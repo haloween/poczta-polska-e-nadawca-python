@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='poczta_polska_enadawca',
-      version='0.6',
+      version='0.7',
       description='Client wrapper for Poczta Polska e-nadawca WSDL API.',
       url='https://github.com/haloween/poczta-polska-e-nadawca-python',
       keywords = "poczta, polska, e-nadawca, enadawca, wsdl, api",
@@ -13,6 +13,7 @@ setup(name='poczta_polska_enadawca',
           'Framework :: Django :: 1.9',
           'Framework :: Django :: 2.0',
           'Framework :: Django :: 2.1',
+          'Framework :: Django :: 2.2',
           'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6',
