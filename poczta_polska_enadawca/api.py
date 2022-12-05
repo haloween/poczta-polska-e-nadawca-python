@@ -96,7 +96,7 @@ class PocztaPolskaAPI(object):
         if self.useTest:
             return self.SANDBOX_API_LABS_WSDL if self.useLabs else self.SANDBOX_API_WSDL
 
-        return self.PROD_API_LABS_WSDL if self.useLabs else self.SANDBOX_API_WSDL
+        return self.PROD_API_LABS_WSDL if self.useLabs else self.PROD_API_WSDL
 
     def init_zeep(self):
         '''
